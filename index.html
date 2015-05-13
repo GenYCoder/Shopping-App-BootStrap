@@ -10,12 +10,17 @@
     <title>Shopping App</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="assets/css/bootstrap.min.css" rel="stylesheet">
+    <link href="assets/css/bootstrap.css" rel="stylesheet">
 
     <!-- Custom styles for this template -->
-    <link href="http://getbootstrap.com/examples/starter-template/starter-template.css" rel="stylesheet">
 
 	<style>
+	body {
+	  padding-top: 50px;
+	}
+
+	/*This was needed because the nav links will not appear when exceed 768px
+	I think there's a better way to do this*/
 	@media screen and (min-width: 768px) {
 	    .collapse{
 	        display: block !important;
@@ -30,9 +35,9 @@
     <![endif]-->
   </head>
 
-  <body ng-app="shopApp">
+  <body ng-app="shopApp" ng-controller="masterCtrl">
 
-    <nav ng-controller="navCtrl" class="navbar navbar-inverse navbar-fixed-top">
+    <nav class="navbar navbar-inverse navbar-fixed-top">
       <div class="container">
         <div class="navbar-header">
           <button type="button" class="navbar-toggle collapsed" ng-click="toggleCollapse()">
@@ -42,17 +47,19 @@
             <span class="icon-bar"></span>
           </button>
         </div>
-        <div id="navbar" class="nav-collapse" collapse="isCollapsed">
+        <div id="navbar" class="nav-collapse navbar-responsive-collapse" collapse="isCollapsed">
           <ul class="nav navbar-nav">
-            <li><a href="#">Shop</a></li>
-            <li><a href="#">Cart</a></li>
+            <li ng-click="toggleCollapse()"><a href="#Shop">Shop</a></li>
+            <li ng-click="toggleCollapse()"><a href="#Cart">Cart</a></li>
           </ul>
         </div><!--/.nav-collapse -->
       </div>
     </nav>
 
     <div class="container">
-    	<h1>Shop</h1>
+    	<h1 ng-bind="currentTab"></h1>
+
+    	<div ui-view></div>
 	</div>
 
     </div><!-- /.container -->
@@ -69,15 +76,41 @@
     
   	<script>
 angular.module("shopApp",["ui.bootstrap", "ui.router"])
-	.controller("navCtrl", function($scope){
-		$scope.isCollapsed = true;
+	.config(function($stateProvider, $urlRouterProvider){
+		//this is setting up the configuration for the application upon launch
 
+		//any unmatch url will go to the trends tab
+		$urlRouterProvider.otherwise("/shop");
+
+		//routing the tabs to the correct view
+		$stateProvider
+			.state("Shop",{
+				url:"/Shop",
+				templateUrl:"views/shop.html",
+				controller:"shopCtrl"
+			})
+			.state("Cart",{
+				url:"/Cart",
+				templateUrl:"views/cart.html",
+				controller:"cartCtrl"
+			})
+			
+
+	})
+	.controller("masterCtrl", function($scope, $state){
+		//this controller will control the state of the navigation when a user clicks on the links in the nav bar
+		$scope.isCollapsed = true;
+		$scope.currentTab = "Shop";
+
+		//toggles the collapsing menu only on mobile
 		$scope.toggleCollapse = function(){
 			$scope.isCollapsed = !$scope.isCollapsed;
 		}
+
 		
 	})
 	.controller("shopCtrl", function($scope){
+
 	})
 	.controller("cartCtrl", function($scope){
 
