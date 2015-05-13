@@ -1,0 +1,50 @@
+[
+    {
+        "ID": "1",
+        "Product_Name": "Manicure",
+        "Product_Desc": "Lorem ipsum dolor sit amet, consectetur adipisicing elit. <br> Cumque officia iusto, impedit quo, deleniti voluptates molestiae aliquid saepe vel eaque sequi.",
+        "Price": " 12.00 ",
+        "Image_Path": "/icons/manicure.gif",
+        "Alt_Description": "manicure icon"
+    },
+    {
+        "ID": "2",
+        "Product_Name": "Haircut",
+        "Product_Desc": "Lorem ipsum dolor sit amet, consectetur adipisicing elit. <br> Cumque officia iusto, impedit quo, deleniti voluptates molestiae aliquid saepe vel eaque sequi.",
+        "Price": " 20.00 ",
+        "Image_Path": "/icons/haircut.gif",
+        "Alt_Description": "haircut icon"
+    },
+    {
+        "ID": "3",
+        "Product_Name": "Massage",
+        "Product_Desc": "Lorem ipsum dolor sit amet, consectetur adipisicing elit. <br> Cumque officia iusto, impedit quo, deleniti voluptates molestiae aliquid saepe vel eaque sequi.",
+        "Price": " 15.00 ",
+        "Image_Path": "/icons/manicure.gif",
+        "Alt_Description": "massage icon"
+    },
+    {
+        "ID": "4",
+        "Product_Name": "$25 Gift Card",
+        "Product_Desc": "Lorem ipsum dolor sit amet, consectetur adipisicing elit. <br> Cumque officia iusto, impedit quo, deleniti voluptates molestiae aliquid saepe vel eaque sequi.",
+        "Price": " 25.00 ",
+        "Image_Path": "/icons/gift card.gif",
+        "Alt_Description": "gift card icon"
+    },
+    {
+        "ID": "5",
+        "Product_Name": "$50 Gift Card",
+        "Product_Desc": "Lorem ipsum dolor sit amet, consectetur adipisicing elit. <br> Cumque officia iusto, impedit quo, deleniti voluptates molestiae aliquid saepe vel eaque sequi.",
+        "Price": " 50.00 ",
+        "Image_Path": "/icons/gift card.gif",
+        "Alt_Description": "gift card icon"
+    },
+    {
+        "ID": "6",
+        "Product_Name": "$100 Gift Card",
+        "Product_Desc": "Lorem ipsum dolor sit amet, consectetur adipisicing elit. <br> Cumque officia iusto, impedit quo, deleniti voluptates molestiae aliquid saepe vel eaque sequi.",
+        "Price": " 100.00 ",
+        "Image_Path": "/icons/gift card.gif",
+        "Alt_Description": "gift card icon"
+    }
+]

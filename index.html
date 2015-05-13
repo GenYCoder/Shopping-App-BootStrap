@@ -19,6 +19,10 @@
 	  padding-top: 50px;
 	}
 
+  .item-name{
+    font-size: 1.3em;
+  }
+
 	/*This was needed because the nav links will not appear when exceed 768px
 	I think there's a better way to do this*/
 	@media screen and (min-width: 768px) {
@@ -35,7 +39,7 @@
     <![endif]-->
   </head>
 
-  <body ng-app="shopApp" ng-controller="masterCtrl">
+  <body ng-app="shopApp" ng-controller="masterCtrl" ng-cloak>
 
     <nav class="navbar navbar-inverse navbar-fixed-top">
       <div class="container">
@@ -80,14 +84,44 @@ angular.module("shopApp",["ui.bootstrap", "ui.router"])
 		//this is setting up the configuration for the application upon launch
 
 		//any unmatch url will go to the trends tab
-		$urlRouterProvider.otherwise("/shop");
+		$urlRouterProvider.otherwise("/Shop");
 
 		//routing the tabs to the correct view
 		$stateProvider
 			.state("Shop",{
 				url:"/Shop",
 				templateUrl:"views/shop.html",
-				controller:"shopCtrl"
+				controller:"shopCtrl",
+        resolve:{
+          //this will be called first before loading the shopCtrl for getting the product Data
+          Products: function($http, $q){
+            
+            var deffered = $q.defer();
+
+            //makes an http call to get the products
+            function getProducts(){
+
+              $http.get("models/data.json")
+                .then(function(response){
+                //if successful return the data
+                deffered.resolve(response);
+              
+              }, function(response){
+                //if not successful return an error
+                deffered.reject(response);
+              
+              });
+
+              return deffered.promise;
+              
+            }
+
+            return {
+              getProducts: getProducts //getting the products
+            }
+          }
+          
+        }
 			})
 			.state("Cart",{
 				url:"/Cart",
@@ -109,12 +143,49 @@ angular.module("shopApp",["ui.bootstrap", "ui.router"])
 
 		
 	})
-	.controller("shopCtrl", function($scope){
+	.controller("shopCtrl", function($scope, Products, cartService){
+    $scope.chunkData = []
+
+    //A function that will chunk the data of any size from array
+    function chunk(arr, size){
+      var newArr = [];
+      for(var i = 0, arrLen = arr.length; i < arrLen; i+=size){
+        newArr.push(arr.slice(i, i+size)); //getting only a chunk of the data
+      }
+      return newArr;
+    }
+
+    Products.getProducts().then(function(response){
+      $scope.chunkData = chunk(response.data, 3); //breaking into 3x3 column to show on the product grid
+
+
+    }, function(response){
+      alert("that did not went well as plan");
+    })
+
+    
+	})
+	.controller("cartCtrl", function($scope, cartService){
 
 	})
-	.controller("cartCtrl", function($scope){
+  .factory("cartService", function(){
+    //this will remember the data that will be save on the cart using the CRUD method
+    var data = [];
+    return {
+      addItem:function(){
 
-	})
+      },
+      removeItem:function(){
+
+      },
+      updateItem:function(){
+
+      },
+      deleteItem:function(){
+
+      }
+    }    
+  })
   	</script>
 
 </body>

@@ -1,76 +1,12 @@
-<div class="row">
-  <div class="col-xs-12 col-md-4">
-  	<div class="thumbnail">
-	    <a href="#" class="">
-	      <img src="assets/img/icons/haircut.gif" alt="...">
-	    </a>
-	    <div class="text-center">
-	    	<h4>label</h4>
-	    	<p>$20</p>
-	    </div>
-  		
-  	</div>
-  </div>
-  <div class="col-xs-12 col-md-4">
-  	<div class="thumbnail">
-	    <a href="#" class="">
-	      <img src="assets/img/icons/haircut.gif" alt="...">
-	    </a>
-	    <div class="text-center">
-	    	<h4>label</h4>
-	    	<h4>$20</h4>
-	    </div>
-  		
-  	</div>
-  </div>
-  <div class="col-xs-12 col-md-4">
-  	<div class="thumbnail">
-	    <a href="#" class="">
-	      <img src="assets/img/icons/haircut.gif" alt="...">
-	    </a>
-	    <div class="text-center">
-	    	<h4>label</h4>
-	    	<h4>$20</h4>
-	    </div>
-  		
-  	</div>
-  </div>
+<div class="row" ng-repeat="rows in chunkData">
+	<div class="col-xs-12 col-md-4" ng-repeat="product in rows">
+	  	<div class="thumbnail">
+			<img ng-src="assets/img/{{product.Image_Path}}" alt="{{product.Alt_Description}}">
+		    <div class="text-center">
+		    	<div class="item-name text-capitalize">{{product.Product_Name}}</div>
+		    	<h4>{{product.Price | currency}}</h4>
+		    </div>
+	  	</div>
+	</div>
 </div>
-<div class="row">
-  <div class="col-xs-12 col-md-4">
-  	<div class="thumbnail">
-	    <a href="#" class="">
-	      <img src="assets/img/icons/haircut.gif" alt="...">
-	    </a>
-	    <div class="text-center">
-	    	<h4>label</h4>
-	    	<h4>$20</h4>
-	    </div>
-  		
-  	</div>
-  </div>
-  <div class="col-xs-12 col-md-4">
-  	<div class="thumbnail">
-	    <a href="#" class="">
-	      <img src="assets/img/icons/haircut.gif" alt="...">
-	    </a>
-	    <div class="text-center">
-	    	<h4>label</h4>
-	    	<h4>$20</h4>
-	    </div>
-  		
-  	</div>
-  </div>
-  <div class="col-xs-12 col-md-4">
-  	<div class="thumbnail">
-	    <a href="#" class="">
-	      <img src="assets/img/icons/haircut.gif" alt="...">
-	    </a>
-	    <div class="text-center">
-	    	<h4>label</h4>
-	    	<h4>$20</h4>
-	    </div>
-  		
-  	</div>
-  </div>
-</div>
+
