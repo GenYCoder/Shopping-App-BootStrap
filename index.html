@@ -23,6 +23,10 @@
     font-size: 1.3em;
   }
 
+  .image-container{
+    width: 90%;
+  }
+
 	/*This was needed because the nav links will not appear when exceed 768px
 	I think there's a better way to do this*/
 	@media screen and (min-width: 768px) {
@@ -61,12 +65,10 @@
     </nav>
 
     <div class="container">
-    	<h1 ng-bind="currentTab"></h1>
-
     	<div ui-view></div>
-	</div>
+  	</div>
 
-    </div><!-- /.container -->
+    
 
 
     <!-- Bootstrap core JavaScript
@@ -100,9 +102,8 @@ angular.module("shopApp",["ui.bootstrap", "ui.router"])
         url:"/Product/:ID",
         templateUrl:"views/product.html",
         controller: function($stateParams, $scope, $filter, productService){
+          //get the data of a specific product depending on what product the user picks
           $scope.product = $filter('filter')(productService.getProducts(), {"ID":$stateParams.ID})[0]
-
-          console.log($scope.product);
         }
       })
 			.state("Cart",{
@@ -113,17 +114,17 @@ angular.module("shopApp",["ui.bootstrap", "ui.router"])
 			
 
 	})
-	.controller("masterCtrl", function($scope, $state){
+	.controller("masterCtrl", function($scope, $state, $rootScope){
 		//this controller will control the state of the navigation when a user clicks on the links in the nav bar
 		$scope.isCollapsed = true;
-		$scope.currentTab = "Shop";
-    $scope.Products = [];
+
+
 
 		//toggles the collapsing menu only on mobile
 		$scope.toggleCollapse = function(){
 			$scope.isCollapsed = !$scope.isCollapsed;
+      //will need to fix an issue with the opening and closing of the collapse bar
 		}
-
 
     
   })
@@ -131,14 +132,6 @@ angular.module("shopApp",["ui.bootstrap", "ui.router"])
     var chunkDataSize = 3;
     $scope.chunkData = []
 
-    //A function that will chunk the data of any size from array
-    function chunk(arr, size){
-      var newArr = [];
-      for(var i = 0, arrLen = arr.length; i < arrLen; i+=size){
-        newArr.push(arr.slice(i, i+size)); //getting only a chunk of the data
-      }
-      return newArr;
-    }
 
     $scope.init = function(){
       $scope.chunkData = productService.getChunkProducts(chunkDataSize);
@@ -157,6 +150,14 @@ angular.module("shopApp",["ui.bootstrap", "ui.router"])
 	.controller("cartCtrl", function($scope, cartService){
 
 	})
+  .filter('range', function() {
+    return function(input, total) {
+      total = parseInt(total);
+      for (var i=0; i<total; i++)
+        input.push(i);
+      return input;
+    };
+  })
   .factory("productService", function($http, $q){
     //use to getting the product data
     var data = [];
