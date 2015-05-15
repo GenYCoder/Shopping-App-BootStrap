@@ -1,0 +1,16 @@
+<h1>{{product.Product_Name}}</h1>
+<div>
+	<div class="col-xs-12 col-sm-2 col-md-2 col-lg-2">
+		<img class="image-container" ng-src="assets/img/{{product.Image_Path}}" alt="{{product.Alt_Description}}">
+	</div>
+	<div class="col-xs-12 col-sm-10 col-md-10 col-lg-10">
+		<p id="product-description">{{product.Product_Desc}}</p>
+		<p id="price">Price: {{product.Price | currency:"$":0}}</p>
+	    <label for="qty">Quantity:</label>
+		<select class="form-control" id="qty" ng-model="itemQuantity" ng-options="number.value as number.value for number in [] | range:100">
+			<!-- <option ng-repeat="n in [] | range:99" value={{$index+1}}>{{$index + 1}}</option> -->
+		</select>
+		<br/>
+		<input ng-click="addItem()" class="btn btn-default" type="button" value="Add to Cart">
+	</div>
+</div>

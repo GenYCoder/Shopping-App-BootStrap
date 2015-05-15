@@ -101,9 +101,17 @@ angular.module("shopApp",["ui.bootstrap", "ui.router"])
       .state("Product",{
         url:"/Product/:ID",
         templateUrl:"views/product.html",
-        controller: function($stateParams, $scope, $filter, productService){
-          //get the data of a specific product depending on what product the user picks
-          $scope.product = $filter('filter')(productService.getProducts(), {"ID":$stateParams.ID})[0]
+        controller: function($stateParams, $scope, $filter, productService, cartService){
+          
+          $scope.itemQuantity = 1; //this is the default for item quantity 
+          $scope.product = $filter('filter')(productService.getProducts(), {"ID":$stateParams.ID})[0]; //get the data of a specific product depending on what product the user picks
+
+
+          //adding the item into the cart
+          $scope.addItem = function(){
+            
+            cartService.add({"ID":$scope.product.ID, "Product_Name":$scope.product.Product_Name,"Price":$scope.product.Price, "Qty":$scope.itemQuantity});
+          }
         }
       })
 			.state("Cart",{
@@ -151,10 +159,11 @@ angular.module("shopApp",["ui.bootstrap", "ui.router"])
 
 	})
   .filter('range', function() {
+    //this is use to do the item quantity based on what range you want to give it
     return function(input, total) {
       total = parseInt(total);
-      for (var i=0; i<total; i++)
-        input.push(i);
+      for (var i=1; i<total; i++)
+        input.push({"value":i});
       return input;
     };
   })
@@ -187,19 +196,25 @@ angular.module("shopApp",["ui.bootstrap", "ui.router"])
   })
   .factory("cartService", function(){
     //this will remember the data that will be save on the cart using the CRUD method
-    var data = [];
+    var cartBasket = [];
     return {
-      addItem:function(){
+      add:function(item){
+        if(angular.isObject(item))
+        {
+          cartBasket.push(item);
+          console.log(cartBasket)
+        }else{
+          return;
+        }
+      },
+      remove:function(ID){
 
       },
-      removeItem:function(){
+      updateItem:function(ID, Qty){
 
       },
-      updateItem:function(){
-
-      },
-      deleteItem:function(){
-
+      get:function(){
+        return cartBasket;
       }
     }    
   })

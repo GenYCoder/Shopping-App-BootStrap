@@ -1,49 +1,49 @@
 [
     {
-        "ID": "1",
+        "ID": 1,
         "Product_Name": "Manicure",
         "Product_Desc": "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Cumque officia iusto, impedit quo, deleniti voluptates molestiae aliquid saepe vel eaque sequi.",
-        "Price": " 12.00 ",
+        "Price": 12.00,
         "Image_Path": "/icons/manicure.gif",
         "Alt_Description": "manicure icon"
     },
     {
-        "ID": "2",
+        "ID": 2,
         "Product_Name": "Haircut",
         "Product_Desc": "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Cumque officia iusto, impedit quo, deleniti voluptates molestiae aliquid saepe vel eaque sequi.",
-        "Price": " 20.00 ",
+        "Price": 20.00,
         "Image_Path": "/icons/haircut.gif",
         "Alt_Description": "haircut icon"
     },
     {
-        "ID": "3",
+        "ID": 3,
         "Product_Name": "Massage",
         "Product_Desc": "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Cumque officia iusto, impedit quo, deleniti voluptates molestiae aliquid saepe vel eaque sequi.",
-        "Price": " 15.00 ",
+        "Price": 15.00,
         "Image_Path": "/icons/manicure.gif",
         "Alt_Description": "massage icon"
     },
     {
-        "ID": "4",
+        "ID": 4,
         "Product_Name": "Gift Card",
         "Product_Desc": "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Cumque officia iusto, impedit quo, deleniti voluptates molestiae aliquid saepe vel eaque sequi.",
-        "Price": " 25.00 ",
+        "Price": 25.00,
         "Image_Path": "/icons/gift card.gif",
         "Alt_Description": "gift card icon"
     },
     {
-        "ID": "5",
+        "ID": 5,
         "Product_Name": "Gift Card",
         "Product_Desc": "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Cumque officia iusto, impedit quo, deleniti voluptates molestiae aliquid saepe vel eaque sequi.",
-        "Price": " 50.00 ",
+        "Price": 50.00,
         "Image_Path": "/icons/gift card.gif",
         "Alt_Description": "gift card icon"
     },
     {
-        "ID": "6",
+        "ID": 6,
         "Product_Name": "Gift Card",
         "Product_Desc": "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Cumque officia iusto, impedit quo, deleniti voluptates molestiae aliquid saepe vel eaque sequi.",
-        "Price": " 100.00 ",
+        "Price": 100.00,
         "Image_Path": "/icons/gift card.gif",
         "Alt_Description": "gift card icon"
     }
