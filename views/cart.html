@@ -5,18 +5,46 @@
 	  <tr>
 	  	<th class="col-xs-1 col-sm-1 col-md-1 col-lg-1"></th>
 	    <th class="col-xs-5 col-sm-5 col-md-5 col-lg-5">Item</th>
-	    <th class="col-xs-2 col-sm-2 col-md-2 col-lg-2">Price</th>
-	    <th class="col-xs-2 col-sm-2 col-md-2 col-lg-2">Quantity</th>
-	    <th class="col-xs-2 col-sm-2 col-md-2 col-lg-2">Cost</th>
+	    <th class="col-xs-2 col-sm-2 col-md-2 col-lg-2 text-center">Price</th>
+	    <th class="col-xs-2 col-sm-2 col-md-2 col-lg-2 text-center">Quantity</th>
+	    <th class="col-xs-2 col-sm-2 col-md-2 col-lg-2 text-center">Cost</th>
 	  </tr>
 	</thead>
 	<tbody>
 		<tr ng-repeat="product in products">
 			<td class="text-center"><span class="glyphicon glyphicon-remove-sign" role="button" ng-click="removeItem(product.ID)"></span></td>
 			<td>{{product.Product_Name}}</td>
-			<td>{{product.Price | currency}}</td>
-			<td>{{product.Qty | number}}</td>
-			<td>{{product.Qty * product.Price | currency}}</td>
+			<td class="text-right">{{product.Price | currency}}</td>
+			<td class="text-right">{{product.Qty | number}}</td>
+			<td class="text-right">{{product.Qty * product.Price | currency}}</td>
+		</tr>
+		<tr>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td class="text-right"><strong>Subtotal:</strong></td>
+			<td class="text-right">{{subTotal | currency}}</td>
+		</tr>
+		<tr>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td class="text-right"><strong>Tax (8%):</strong></td>
+			<td class="text-right">{{subTotalTax | currency}}</td>
+		</tr>
+		<tr>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td class="text-right"><strong>Gratuity:</strong></td>
+			<td class="text-right"><input class="form-control" type="text" ng-model="gratuity"></td>
+		</tr>
+		<tr>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td class="text-right"><strong>Total:</strong></td>
+			<td class="text-right">{{gratuity}}</td>
 		</tr>
 	</tbody>
 </table>

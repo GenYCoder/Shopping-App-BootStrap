@@ -77,10 +77,12 @@
    	<script src="lib/angular.min.js"></script>
    	<script src="services/angular-ui-router.min.js"></script>
    	<script src="services/ui-bootstrap-tpls-0.13.0.min.js"></script>
+    <script src="services/ngStorage.min.js"></script>
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="assets/js/ie10-viewport-bug-workaround.js"></script>
     
   	<script>
-angular.module("shopApp",["ui.bootstrap", "ui.router"])
+angular.module("shopApp",["ui.bootstrap", "ui.router", "ngStorage"])
   .run(function(Product){
     Product.add();
   })
@@ -167,9 +169,22 @@ angular.module("shopApp",["ui.bootstrap", "ui.router"])
 	})
 	.controller("cartCtrl", function($scope, Cart){
     $scope.products = Cart.get();
+    $scope.tax = 0.08;
+    $scope.subTotal = Cart.getSubTotal();
+    $scope.subTotalTax = $scope.subTotal + ($scope.subTotal * $scope.tax);
+    $scope.gratuity = 0;
+    $scope.finalTotal = 0;
 
+    //i should setup a watcher for the gratity
+
+    //removing an item off a cart
     $scope.removeItem = function(ID){
       Cart.remove(ID);
+    }
+
+    //updating the quantity of items
+    $scope.updateQty = function(ID, qty){
+
     }
 	})
   .filter('range', function() {
@@ -222,9 +237,16 @@ angular.module("shopApp",["ui.bootstrap", "ui.router"])
       }
     }
   })
-  .factory("Cart", function(){
-    //this will remember the data that will be save on the cart using the CRUD method
-    var cartBasket = [];
+  .factory("Cart", function($sessionStorage){
+    //this will remember the data that will be save on the cart using the CRUD method for an user session
+  
+    var total = 0;
+
+    //check if key exist in the session storage 
+    if( !$sessionStorage.hasOwnProperty("cartBasket") ){
+      $sessionStorage.cartBasket = [];   
+    }
+    
     return {
       add:function(item){
         
@@ -233,20 +255,21 @@ angular.module("shopApp",["ui.bootstrap", "ui.router"])
         if(angular.isObject(item))
         {
           //will check the cart if item exist and will adjust the quantity of items
-          for(var i=0, onCart = cartBasket.length; i < onCart; i++)
+          for(var i=0, onCart = $sessionStorage.cartBasket.length; i < onCart; i++)
           {
 
-            if(cartBasket[i].ID === item.ID){
-              cartBasket[i].Qty += item.Qty;
+            if($sessionStorage.cartBasket[i].ID === item.ID){
+              $sessionStorage.cartBasket[i].Qty += item.Qty;
               addedToExistingItem = true;
               break;
             }
           }
           //if the item doesn't exist then add to cartBasket
           if(!addedToExistingItem){
-            cartBasket.push(item);
+            $sessionStorage.cartBasket.push(item);
             
-          }           
+          }
+          
         }else{
           return; //if item is not an object then return 
         }
@@ -254,9 +277,9 @@ angular.module("shopApp",["ui.bootstrap", "ui.router"])
       },
       remove:function(ID){
         //find the item based on ID then delete it off the basket
-        for(var i=0, onCart = cartBasket.length; i < onCart; i++){
-          if(cartBasket[i].ID === ID ){
-            cartBasket.splice(i, 1);
+        for(var i=0, onCart = $sessionStorage.cartBasket.length; i < onCart; i++){
+          if($sessionStorage.cartBasket[i].ID === ID ){
+            $sessionStorage.cartBasket.splice(i, 1);
             break;
           }
         }
@@ -265,10 +288,23 @@ angular.module("shopApp",["ui.bootstrap", "ui.router"])
 
       },
       get:function(){
-        return cartBasket;
+        return $sessionStorage.cartBasket;
       },
-      getTotal:function(){
+      getSubTotal:function(){
+        //this function will sum up the subtotal in the cart
         
+        //checking if cart is empty
+        if($sessionStorage.cartBasket.length == 0){
+          return total;
+        }else{
+
+          for(var i=0, onCart = $sessionStorage.cartBasket.length; i < onCart; i++ ){
+            total += $sessionStorage.cartBasket[i].Price;
+          }
+
+          return total;
+          
+        }
       }
     }    
   })
