@@ -7,7 +7,7 @@
 		<p id="product-description">{{product.Product_Desc}}</p>
 		<p id="price">Price: {{product.Price | currency:"$":0}}</p>
 	    <label for="qty">Quantity:</label>
-		<select class="form-control" id="qty" ng-model="itemQuantity" ng-options="number.value as number.value for number in [] | range:100">
+		<select class="form-control" id="qty" ng-model="itemQuantity" role="button" ng-options="number.value as number.value for number in [] | range:100">
 			<!-- <option ng-repeat="n in [] | range:99" value={{$index+1}}>{{$index + 1}}</option> -->
 		</select>
 		<br/>

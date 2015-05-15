@@ -6,7 +6,6 @@
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
     <meta name="description" content="Responsive Shopping App">
     <meta name="author" content="Sumen Tse">
-
     <title>Shopping App</title>
 
     <!-- Bootstrap core CSS -->
@@ -82,8 +81,8 @@
     
   	<script>
 angular.module("shopApp",["ui.bootstrap", "ui.router"])
-  .run(function(productService){
-    productService.addProducts();
+  .run(function(Product){
+    Product.add();
   })
 	.config(function($stateProvider, $urlRouterProvider){
 		//this is setting up the configuration for the application upon launch
@@ -101,16 +100,29 @@ angular.module("shopApp",["ui.bootstrap", "ui.router"])
       .state("Product",{
         url:"/Product/:ID",
         templateUrl:"views/product.html",
-        controller: function($stateParams, $scope, $filter, productService, cartService){
+        controller: function($state, $stateParams, $scope, Product, Cart){
           
+          var checkProduct = Product.search($stateParams.ID); //should be run once for optimizing
           $scope.itemQuantity = 1; //this is the default for item quantity 
-          $scope.product = $filter('filter')(productService.getProducts(), {"ID":$stateParams.ID})[0]; //get the data of a specific product depending on what product the user picks
+          $scope.product = []
 
+          //Checks if the product exist and if it doesn't go back to the Shop state otherwise show the product. I was thinking what if the product doesn't exist anymore
+          if( angular.isUndefined( checkProduct ) ){
+            
+            $state.go("Shop");
+
+          }else{
+            
+            $scope.product = checkProduct;
+          
+          }
 
           //adding the item into the cart
           $scope.addItem = function(){
             
-            cartService.add({"ID":$scope.product.ID, "Product_Name":$scope.product.Product_Name,"Price":$scope.product.Price, "Qty":$scope.itemQuantity});
+            Cart.add({"ID":$scope.product.ID, "Product_Name":$scope.product.Product_Name,"Price":$scope.product.Price, "Qty":$scope.itemQuantity});
+
+            $state.go("Shop"); //go back to Shop state after product is added
           }
         }
       })
@@ -123,9 +135,8 @@ angular.module("shopApp",["ui.bootstrap", "ui.router"])
 
 	})
 	.controller("masterCtrl", function($scope, $state, $rootScope){
-		//this controller will control the state of the navigation when a user clicks on the links in the nav bar
+		//this controller will control the state of the navigation when a user clicks on the links in the nav bar. I'm using scope inheritance
 		$scope.isCollapsed = true;
-
 
 
 		//toggles the collapsing menu only on mobile
@@ -136,30 +147,34 @@ angular.module("shopApp",["ui.bootstrap", "ui.router"])
 
     
   })
-  .controller("shopCtrl", function($scope, $state, productService, cartService){
+  .controller("shopCtrl", function($scope, $state, Product, Cart){
     var chunkDataSize = 3;
     $scope.chunkData = []
 
 
     $scope.init = function(){
-      $scope.chunkData = productService.getChunkProducts(chunkDataSize);
+      $scope.chunkData = Product.getChunk(chunkDataSize);
     }
 
     $scope.showProduct = function(ID){
 
       $state.go("Product", {"ID":ID});
       
-
     }
 
     $scope.init();
     
 	})
-	.controller("cartCtrl", function($scope, cartService){
+	.controller("cartCtrl", function($scope, Cart){
+    $scope.products = Cart.get();
 
+    $scope.removeItem = function(ID){
+      Cart.remove(ID);
+    }
 	})
   .filter('range', function() {
     //this is use to do the item quantity based on what range you want to give it
+    //will be use for ng-options
     return function(input, total) {
       total = parseInt(total);
       for (var i=1; i<total; i++)
@@ -167,23 +182,36 @@ angular.module("shopApp",["ui.bootstrap", "ui.router"])
       return input;
     };
   })
-  .factory("productService", function($http, $q){
+  .factory("Product", function($http){
     //use to getting the product data
-    var data = [];
+    var products = [];
     return {
-      addProducts:function(){
+      add:function(){
         $http.get("models/data.json").then(function(response){
-          data = response.data;
+          products = response.data;
         }, function(response){
           alert("fail to get data");
         });
       },
-      getProducts:function(){
-        return data;
+      search:function(ID){
+        //return if there's no data and id parameter is not an interger
+        var ID = parseInt(ID);
+        if(products.length === 0){
+          return;
+        }else{
+          for(var i = 0, dataLen = products.length; i < dataLen; i++){
+            if(products[i].ID === ID){
+              return products[i]; //will return the object if a match is found
+            }
+          }
+        }
       },
-      getChunkProducts:function(size){
+      get:function(){
+        return products;
+      },
+      getChunk:function(size){
         //this function will break down the product array into chunks
-        return this.chunk(data, size);
+        return this.chunk(products, size);
       },
       chunk: function(arr, size){
         var newArr = [];
@@ -194,27 +222,53 @@ angular.module("shopApp",["ui.bootstrap", "ui.router"])
       }
     }
   })
-  .factory("cartService", function(){
+  .factory("Cart", function(){
     //this will remember the data that will be save on the cart using the CRUD method
     var cartBasket = [];
     return {
       add:function(item){
+        
+        var addedToExistingItem = false;
+        
         if(angular.isObject(item))
         {
-          cartBasket.push(item);
-          console.log(cartBasket)
+          //will check the cart if item exist and will adjust the quantity of items
+          for(var i=0, onCart = cartBasket.length; i < onCart; i++)
+          {
+
+            if(cartBasket[i].ID === item.ID){
+              cartBasket[i].Qty += item.Qty;
+              addedToExistingItem = true;
+              break;
+            }
+          }
+          //if the item doesn't exist then add to cartBasket
+          if(!addedToExistingItem){
+            cartBasket.push(item);
+            
+          }           
         }else{
-          return;
+          return; //if item is not an object then return 
         }
-      },
-      remove:function(ID){
 
       },
-      updateItem:function(ID, Qty){
+      remove:function(ID){
+        //find the item based on ID then delete it off the basket
+        for(var i=0, onCart = cartBasket.length; i < onCart; i++){
+          if(cartBasket[i].ID === ID ){
+            cartBasket.splice(i, 1);
+            break;
+          }
+        }
+      },
+      update:function(ID, Qty){
 
       },
       get:function(){
         return cartBasket;
+      },
+      getTotal:function(){
+        
       }
     }    
   })

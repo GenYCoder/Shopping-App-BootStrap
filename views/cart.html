@@ -1,1 +1,22 @@
 <h1>Cart</h1>
+<h4 ng-show="products.length == 0">No item in cart</h4>
+<table class="table" ng-show="products.length > 0">
+	<thead>
+	  <tr>
+	  	<th class="col-xs-1 col-sm-1 col-md-1 col-lg-1"></th>
+	    <th class="col-xs-5 col-sm-5 col-md-5 col-lg-5">Item</th>
+	    <th class="col-xs-2 col-sm-2 col-md-2 col-lg-2">Price</th>
+	    <th class="col-xs-2 col-sm-2 col-md-2 col-lg-2">Quantity</th>
+	    <th class="col-xs-2 col-sm-2 col-md-2 col-lg-2">Cost</th>
+	  </tr>
+	</thead>
+	<tbody>
+		<tr ng-repeat="product in products">
+			<td class="text-center"><span class="glyphicon glyphicon-remove-sign" role="button" ng-click="removeItem(product.ID)"></span></td>
+			<td>{{product.Product_Name}}</td>
+			<td>{{product.Price | currency}}</td>
+			<td>{{product.Qty | number}}</td>
+			<td>{{product.Qty * product.Price | currency}}</td>
+		</tr>
+	</tbody>
+</table>
