@@ -168,14 +168,26 @@ angular.module("shopApp",["ui.bootstrap", "ui.router", "ngStorage"])
     
 	})
 	.controller("cartCtrl", function($scope, Cart){
-    $scope.products = Cart.get();
+    
+    var filter_gratuity = null;
+
+    $scope.products = Cart.get(); //get the items store in session storage
     $scope.tax = 0.08;
     $scope.subTotal = Cart.getSubTotal();
     $scope.subTotalTax = $scope.subTotal + ($scope.subTotal * $scope.tax);
-    $scope.gratuity = 0;
-    $scope.finalTotal = 0;
+    $scope.gratuity = "0.00";
+    $scope.finalTotal = $scope.gratuity;
 
-    //i should setup a watcher for the gratity
+
+    //checks if type is float with fixed decimal of two
+    $scope.$watch("gratuity", function(newValue, oldValue){
+      filter_gratuity = parseFloat(parseFloat(newValue).toFixed(2));
+      
+      if( !isNaN(filter_gratuity) ){
+        $scope.finalTotal = $scope.subTotalTax + filter_gratuity;
+      }
+      
+    })
 
     //removing an item off a cart
     $scope.removeItem = function(ID){
