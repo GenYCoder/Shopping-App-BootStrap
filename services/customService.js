@@ -1,14 +1,18 @@
 angular.module("customService", [])
-  .factory("Product", function($http){
+  .factory("Product", function($http, $q){
     //use to getting the product data
     var products = [];
     return {
       add:function(){
+        var deferred = $q.defer();
         $http.get("models/data.json").then(function(response){
           products = response.data;
+          deferred.resolve(products);
         }, function(response){
-          alert("fail to get data");
+          deferred.reject("Cannot get products");
         });
+
+        return deferred.promise;
       },
       search:function(ID){
         //return if there's no data and id parameter is not an interger

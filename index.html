@@ -88,9 +88,6 @@
     
   	<script>
 angular.module("shopApp",["ui.bootstrap", "ui.router", "ngStorage", "customService"])
-  .run(function(Product){
-    Product.add(); //getting the products on load and checks if there are new products
-  })
 	.config(function($stateProvider, $urlRouterProvider){
 		//this is setting up the configuration for the application upon launch
 
@@ -106,6 +103,14 @@ angular.module("shopApp",["ui.bootstrap", "ui.router", "ngStorage", "customServi
           var chunkDataSize = 3; //will show rows by three
           $scope.chunkData = []
 
+          //getting the products
+          Product.add().then(function(response){
+            $scope.init();
+            
+          }, function(response){
+            alert(response);
+          })
+
           //setting up the grid row
           $scope.init = function(){
             $scope.chunkData = Product.getChunk(chunkDataSize);
@@ -117,7 +122,6 @@ angular.module("shopApp",["ui.bootstrap", "ui.router", "ngStorage", "customServi
             
           }
 
-          $scope.init();
           
         }
 			})
