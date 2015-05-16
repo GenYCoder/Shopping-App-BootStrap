@@ -18,6 +18,11 @@
 	  padding-top: 50px;
 	}
 
+  .activeState{
+    text-decoration: underline;
+    text-decoration-color: white;
+  }
+
   .item-name{
     font-size: 1.3em;
   }
@@ -56,8 +61,8 @@
         </div>
         <div id="navbar" class="nav-collapse navbar-responsive-collapse" collapse="isCollapsed">
           <ul class="nav navbar-nav">
-            <li ng-click="toggleCollapse()"><a href="#Shop">Shop</a></li>
-            <li ng-click="toggleCollapse()"><a href="#Cart">Cart</a></li>
+            <li ng-class="getStateClass('Shop')" ng-click="selectCategory('Shop')"><a href="#Shop">Shop</a></li>
+            <li ng-class="getStateClass('Cart')" ng-click="selectCategory('Cart')"><a href="#Cart">Cart</a></li>
           </ul>
         </div><!--/.nav-collapse -->
       </div>
@@ -138,7 +143,13 @@ angular.module("shopApp",["ui.bootstrap", "ui.router", "ngStorage"])
 	})
 	.controller("masterCtrl", function($scope, $state, $rootScope){
 		//this controller will control the state of the navigation when a user clicks on the links in the nav bar. I'm using scope inheritance
-		$scope.isCollapsed = true;
+		var currentState = "";
+    $scope.isCollapsed = true;
+
+    //will highlight the tab
+    $rootScope.$on("$stateChangeSuccess", function(event, toState, toParams, fromState, fromParams){
+      currentState = toState.name;
+    });
 
 
 		//toggles the collapsing menu only on mobile
@@ -146,6 +157,15 @@ angular.module("shopApp",["ui.bootstrap", "ui.router", "ngStorage"])
 			$scope.isCollapsed = !$scope.isCollapsed;
       //will need to fix an issue with the opening and closing of the collapse bar
 		}
+
+    $scope.selectCategory = function(category){
+      currentState = category;
+      $scope.toggleCollapse();
+    }
+
+    $scope.getStateClass = function(current){
+      return currentState == current ? "activeState" : "";
+    }
 
     
   })
@@ -191,6 +211,7 @@ angular.module("shopApp",["ui.bootstrap", "ui.router", "ngStorage"])
       
     })
 
+
     //summarizing the cart basket
     $scope.summarizeCart = function(){
 
@@ -214,6 +235,7 @@ angular.module("shopApp",["ui.bootstrap", "ui.router", "ngStorage"])
 
     //updating the quantity of items
     $scope.updateQty = function(ID, qty){
+      
       $scope.summarizeCart();
     }
 	})
@@ -335,6 +357,14 @@ angular.module("shopApp",["ui.bootstrap", "ui.router", "ngStorage"])
         }
       }
     }    
+  })
+  .directive("cartQty", function(){
+    return function(scope, element, attrs){
+
+      element.bind("keyup click", function(){
+        console.log(element)
+      })
+    }
   })
   	</script>
 
