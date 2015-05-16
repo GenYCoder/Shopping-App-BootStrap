@@ -12,7 +12,6 @@
     <link href="assets/css/bootstrap.css" rel="stylesheet">
 
     <!-- Custom styles for this template -->
-
 	<style>
 	body {
 	  padding-top: 50px;
@@ -83,13 +82,14 @@
    	<script src="services/angular-ui-router.min.js"></script>
    	<script src="services/ui-bootstrap-tpls-0.13.0.min.js"></script>
     <script src="services/ngStorage.min.js"></script>
+    <script src="services/customService.js"></script>
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <script src="assets/js/ie10-viewport-bug-workaround.js"></script>
     
   	<script>
-angular.module("shopApp",["ui.bootstrap", "ui.router", "ngStorage"])
+angular.module("shopApp",["ui.bootstrap", "ui.router", "ngStorage", "customService"])
   .run(function(Product){
-    Product.add();
+    Product.add(); //getting the products on load and checks if there are new products
   })
 	.config(function($stateProvider, $urlRouterProvider){
 		//this is setting up the configuration for the application upon launch
@@ -102,7 +102,24 @@ angular.module("shopApp",["ui.bootstrap", "ui.router", "ngStorage"])
 			.state("Shop",{
 				url:"/Shop",
 				templateUrl:"views/shop.html",
-				controller:"shopCtrl"
+				controller: function($scope, $state, Product, Cart){
+          var chunkDataSize = 3; //will show rows by three
+          $scope.chunkData = []
+
+          //setting up the grid row
+          $scope.init = function(){
+            $scope.chunkData = Product.getChunk(chunkDataSize);
+          }
+
+          $scope.showProduct = function(ID){
+
+            $state.go("Product", {"ID":ID});
+            
+          }
+
+          $scope.init();
+          
+        }
 			})
       .state("Product",{
         url:"/Product/:ID",
@@ -136,9 +153,60 @@ angular.module("shopApp",["ui.bootstrap", "ui.router", "ngStorage"])
 			.state("Cart",{
 				url:"/Cart",
 				templateUrl:"views/cart.html",
-				controller:"cartCtrl"
+				controller: function($scope, Cart){
+    
+          var filter_gratuity = null;
+
+          $scope.products = Cart.get(); //get the items store in session storage
+          //initial setup of cart summary
+          $scope.tax = 0.08;
+          $scope.subTotal = Cart.getSubTotal();
+          $scope.subTotalTax = $scope.subTotal + ($scope.subTotal * $scope.tax);
+          $scope.gratuity = "20.00";
+          $scope.finalTotal = $scope.subTotalTax + $scope.gratuity;
+
+
+          //checks if type is float with fixed decimal of two
+          $scope.$watch("gratuity", function(newValue, oldValue){
+            filter_gratuity = parseFloat(parseFloat(newValue).toFixed(2));
+        
+            if( !isNaN( filter_gratuity) ){
+              $scope.finalTotal = $scope.subTotalTax + filter_gratuity;
+            }else{
+              $scope.finalTotal = $scope.subTotalTax + 0;
+            }
+            
+          })
+
+          //summarizing the cart basket
+          $scope.summarizeCart = function(){
+
+            $scope.subTotal = Cart.getSubTotal();
+            $scope.subTotalTax = $scope.subTotal + ($scope.subTotal * $scope.tax);
+            
+            //fixes a bug where if user enter letters then delete item it will not update the final total
+            //will fix on watcher to make it automatically replace letters to empty string
+            if(isNaN(parseInt($scope.gratuity))){
+              $scope.finalTotal = $scope.subTotalTax;
+            } else{
+              $scope.finalTotal = $scope.subTotalTax + parseInt($scope.gratuity);
+            }
+          }
+
+          //removing an item off a cart
+          $scope.removeItem = function(ID){
+            Cart.remove(ID);
+            $scope.summarizeCart();
+          }
+
+          //updating the quantity of items
+          $scope.updateQty = function(qty){
+            if(!angular.isUndefined(qty)){
+                $scope.summarizeCart();
+            }
+          }
+        }
 			})
-			
 
 	})
 	.controller("masterCtrl", function($scope, $state, $rootScope){
@@ -158,87 +226,19 @@ angular.module("shopApp",["ui.bootstrap", "ui.router", "ngStorage"])
       //will need to fix an issue with the opening and closing of the collapse bar
 		}
 
+    //user selection of category
     $scope.selectCategory = function(category){
       currentState = category;
       $scope.toggleCollapse();
     }
 
+    //find the active state
     $scope.getStateClass = function(current){
       return currentState == current ? "activeState" : "";
     }
 
     
   })
-  .controller("shopCtrl", function($scope, $state, Product, Cart){
-    var chunkDataSize = 3;
-    $scope.chunkData = []
-
-
-    $scope.init = function(){
-      $scope.chunkData = Product.getChunk(chunkDataSize);
-    }
-
-    $scope.showProduct = function(ID){
-
-      $state.go("Product", {"ID":ID});
-      
-    }
-
-    $scope.init();
-    
-	})
-	.controller("cartCtrl", function($scope, Cart){
-    
-    var filter_gratuity = null;
-
-    $scope.products = Cart.get(); //get the items store in session storage
-    $scope.tax = 0.08;
-    $scope.subTotal = Cart.getSubTotal();
-    $scope.subTotalTax = $scope.subTotal + ($scope.subTotal * $scope.tax);
-    $scope.gratuity = "20.00";
-    $scope.finalTotal = $scope.subTotalTax + $scope.gratuity;
-
-
-    //checks if type is float with fixed decimal of two
-    $scope.$watch("gratuity", function(newValue, oldValue){
-      filter_gratuity = parseFloat(parseFloat(newValue).toFixed(2));
-  
-      if( !isNaN(filter_gratuity) ){
-        $scope.finalTotal = $scope.subTotalTax + filter_gratuity;
-      }else{
-        $scope.finalTotal = $scope.subTotalTax + 0;
-      }
-      
-    })
-
-
-    //summarizing the cart basket
-    $scope.summarizeCart = function(){
-
-      $scope.subTotal = Cart.getSubTotal();
-      $scope.subTotalTax = $scope.subTotal + ($scope.subTotal * $scope.tax);
-      
-      //fixes a bug where if user enter letters then delete item it will not update the final total
-      //will fix on watcher to make it automatically replace letters to empty string
-      if(isNaN(parseInt($scope.gratuity))){
-        $scope.finalTotal = $scope.subTotalTax;
-      }else{
-        $scope.finalTotal = $scope.subTotalTax + parseInt($scope.gratuity);
-      }
-    }
-
-    //removing an item off a cart
-    $scope.removeItem = function(ID){
-      Cart.remove(ID);
-      $scope.summarizeCart();
-    }
-
-    //updating the quantity of items
-    $scope.updateQty = function(ID, qty){
-      
-      $scope.summarizeCart();
-    }
-	})
   .filter('range', function() {
     //this is use to do the item quantity based on what range you want to give it
     //will be use for ng-options
@@ -249,124 +249,34 @@ angular.module("shopApp",["ui.bootstrap", "ui.router", "ngStorage"])
       return input;
     };
   })
-  .factory("Product", function($http){
-    //use to getting the product data
-    var products = [];
+  .directive('onlyDigits', function () {
+    //a directive to show only digits
     return {
-      add:function(){
-        $http.get("models/data.json").then(function(response){
-          products = response.data;
-        }, function(response){
-          alert("fail to get data");
-        });
-      },
-      search:function(ID){
-        //return if there's no data and id parameter is not an interger
-        var ID = parseInt(ID);
-        if(products.length === 0){
-          return;
-        }else{
-          for(var i = 0, dataLen = products.length; i < dataLen; i++){
-            if(products[i].ID === ID){
-              return products[i]; //will return the object if a match is found
-            }
-          }
+        restrict: 'A',
+        require: 'ngModel',
+        link: function (scope, element, attrs, ngModel) {
+            if (!ngModel) return;
+            ngModel.$parsers.unshift(function (inputValue) {
+                var digits = inputValue.split('').filter(function (s) { return (!isNaN(s) && s != ' '); }).join('');
+                
+                //limits how many items should be brought
+                if(digits > 999){
+                  digits = 999;
+                }
+                else if(digits == 0){
+                  digits = 1;
+                }
+
+                ngModel.$viewValue = digits;
+                ngModel.$render();
+                return digits;
+            });
         }
-      },
-      get:function(){
-        return products;
-      },
-      getChunk:function(size){
-        //this function will break down the product array into chunks
-        return this.chunk(products, size);
-      },
-      chunk: function(arr, size){
-        var newArr = [];
-        for(var i = 0, arrLen = arr.length; i < arrLen; i+=size){
-          newArr.push(arr.slice(i, i+size)); //getting only a chunk of the data
-        }
-        return newArr;
-      }
-    }
-  })
-  .factory("Cart", function($sessionStorage){
-    //this will remember the data that will be save on the cart using the CRUD method for an user session
-  
+    };
+});
 
-    //check if key exist in the session storage 
-    if( !$sessionStorage.hasOwnProperty("cartBasket") ){
-      $sessionStorage.cartBasket = [];   
-    }
-    
-    return {
-      add:function(item){
-        
-        var addedToExistingItem = false;
-        
-        if(angular.isObject(item))
-        {
-          //will check the cart if item exist and will adjust the quantity of items
-          for(var i=0, onCart = $sessionStorage.cartBasket.length; i < onCart; i++)
-          {
 
-            if($sessionStorage.cartBasket[i].ID === item.ID){
-              $sessionStorage.cartBasket[i].Qty += item.Qty;
-              addedToExistingItem = true;
-              break;
-            }
-          }
-          //if the item doesn't exist then add to cartBasket
-          if(!addedToExistingItem){
-            $sessionStorage.cartBasket.push(item);
-            
-          }
-          
-        }else{
-          return; //if item is not an object then return 
-        }
-
-      },
-      remove:function(ID){
-        //find the item based on ID then delete it off the basket
-        for(var i=0, onCart = $sessionStorage.cartBasket.length; i < onCart; i++){
-          if($sessionStorage.cartBasket[i].ID === ID ){
-            $sessionStorage.cartBasket.splice(i, 1);
-            break;
-          }
-        }
-      },
-      update:function(ID, Qty){
-
-      },
-      get:function(){
-        return $sessionStorage.cartBasket;
-      },
-      getSubTotal:function(){
-        //this function will sum up the subtotal in the cart
-        var total = 0;
-        //checking if cart is empty
-        if($sessionStorage.cartBasket.length == 0){
-          return total;
-        }else{
-          for(var i=0, onCart = $sessionStorage.cartBasket.length; i < onCart; i++ ){
-            total += ($sessionStorage.cartBasket[i].Price * $sessionStorage.cartBasket[i].Qty);
-          }
-
-          return total;
-          
-        }
-      }
-    }    
-  })
-  .directive("cartQty", function(){
-    return function(scope, element, attrs){
-
-      element.bind("keyup click", function(){
-        console.log(element)
-      })
-    }
-  })
   	</script>
 
-</body>
-	</html>
+  </body>
+</html>
