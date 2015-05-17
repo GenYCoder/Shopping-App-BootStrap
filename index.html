@@ -103,7 +103,7 @@ angular.module("shopApp",["ui.bootstrap", "ui.router", "ngStorage", "customServi
           var chunkDataSize = 3; //will show rows by three
           $scope.chunkData = []
 
-          //getting the products
+          //getting the products and checks the model if there are any updates
           Product.add().then(function(response){
             $scope.init();
             
@@ -145,10 +145,27 @@ angular.module("shopApp",["ui.bootstrap", "ui.router", "ngStorage", "customServi
           
           }
 
-          //adding the item into the cart
+          //adding the item into the cart but needs to check if it reach max
           $scope.addItem = function(){
+           
+            var maxItem = 99; //maximum item in the cart
+            var onCartItem = Cart.searchItem( $stateParams.ID );
             
-            Cart.add({"ID":$scope.product.ID, "Product_Name":$scope.product.Product_Name,"Price":$scope.product.Price, "Qty":$scope.itemQuantity});
+            //If item exceeds over 99 then it will not update the qty, but it will add accordingly
+            if( onCartItem !== false ){
+              if( ($scope.itemQuantity + onCartItem.Qty) <= maxItem ){
+                
+                Cart.add({"ID":$scope.product.ID, "Product_Name":$scope.product.Product_Name,"Price":$scope.product.Price, "Qty":$scope.itemQuantity});
+              }else{
+                Cart.update($scope.product.ID, maxItem);
+              }
+
+            }else{
+                //if item does not exist in cartbasket  
+                Cart.add({"ID":$scope.product.ID, "Product_Name":$scope.product.Product_Name,"Price":$scope.product.Price, "Qty":$scope.itemQuantity});   
+
+            }
+
 
             $state.go("Shop"); //go back to Shop state after product is added
           }
@@ -264,8 +281,8 @@ angular.module("shopApp",["ui.bootstrap", "ui.router", "ngStorage", "customServi
                 var digits = inputValue.split('').filter(function (s) { return (!isNaN(s) && s != ' '); }).join('');
                 
                 //limits how many items should be brought
-                if(digits > 999){
-                  digits = 999;
+                if(digits > 99){
+                  digits = 99;
                 }
                 else if(digits == 0){
                   digits = 1;

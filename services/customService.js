@@ -81,6 +81,7 @@ angular.module("customService", [])
 
       },
       remove:function(ID){
+        var ID = parseInt(ID);
         //find the item based on ID then delete it off the basket
         for(var i=0, onCart = $sessionStorage.cartBasket.length; i < onCart; i++){
           if($sessionStorage.cartBasket[i].ID === ID ){
@@ -89,23 +90,57 @@ angular.module("customService", [])
           }
         }
       },
+      update:function(ID, Qty){
+        var ID = parseInt(ID);
+        if( angular.isNumber(ID) && $sessionStorage.cartBasket.length !== 0 ){
+         
+          for(var i=0, onCart = $sessionStorage.cartBasket.length; i < onCart; i++){
+            
+            //gives back object of item if item matches
+            if( $sessionStorage.cartBasket[i].ID === ID){
+              $sessionStorage.cartBasket[i].Qty = Qty;
+              break;
+            }
+          }
+        }        
+      },
+      searchItem:function(ID){
+        var ID = parseInt(ID);
+        //will search for product quantity so it won't exceed limits
+        if( angular.isNumber(ID) && $sessionStorage.cartBasket.length !== 0 ){
+         
+          for(var i=0, onCart = $sessionStorage.cartBasket.length; i < onCart; i++){
+            
+            //gives back object of item if item matches
+            if( $sessionStorage.cartBasket[i].ID === ID){
+              return $sessionStorage.cartBasket[i]; //return object
+            
+            }
+          }
+        }
+        //if no match is found
+        return false;
+      },
       get:function(){
         return $sessionStorage.cartBasket;
       },
       getSubTotal:function(){
         //this function will sum up the subtotal in the cart
         var total = 0;
-        //checking if cart is empty
-        if($sessionStorage.cartBasket.length == 0){
-          return total;
-        }else{
-          for(var i=0, onCart = $sessionStorage.cartBasket.length; i < onCart; i++ ){
-            total += ($sessionStorage.cartBasket[i].Price * $sessionStorage.cartBasket[i].Qty);
-          }
 
+        //checking if cart is empty
+        if($sessionStorage.cartBasket.length === 0){
           return total;
-          
         }
+          
+         //does the calculation of the subtotal of all items on cart 
+        for(var i=0, onCart = $sessionStorage.cartBasket.length; i < onCart; i++ ){
+          total += ($sessionStorage.cartBasket[i].Price * $sessionStorage.cartBasket[i].Qty);
+        }
+
+        return total;
+          
+        
       }
     }    
   })
