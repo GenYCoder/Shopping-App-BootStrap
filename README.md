@@ -1,7 +1,7 @@
 <h1>Shopping App Bootstrap</h1>
 A demo can be found <a href="http://genycoder.github.io/Shopping-App-BootStrap" target="_blank">here</a>
 <br><br>
-It uses angularjs, ui.bootstrap, bootstrap, and ngStorage <br><br>
+It uses angularjs, ui.bootstrap, ui.router, and ngStorage <br><br>
 Steps to compile this:<br>
 1) Start up a web server<br>
 2) Navigate to web server folder<br>
