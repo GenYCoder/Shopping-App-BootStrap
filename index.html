@@ -30,6 +30,40 @@
     width: 90%;
   }
 
+
+.icon-bar {
+  transition: all 0.2s;
+}
+
+  .top-bar {
+    transform: rotate(45deg);
+    transform-origin: 10% 20%;
+  }
+
+  .middle-bar {
+    opacity: 0;
+  }
+
+  .bottom-bar {
+    transform: rotate(-45deg);
+    transform-origin: 10% 30%;
+   
+  }
+
+  .collapsed .top-bar {
+    transform: rotate(0deg);
+   
+  }
+
+  .collapsed .middle-bar {
+    opacity: 1;
+  }
+
+  .collapsed .bottom-bar {
+    transform: rotate(0deg);   
+  }
+
+
 	/*This was needed because the nav links will not appear when exceed 768px
 	I think there's a better way to do this*/
 	@media screen and (min-width: 768px) {
@@ -51,11 +85,11 @@
     <nav class="navbar navbar-inverse navbar-fixed-top">
       <div class="container">
         <div class="navbar-header">
-          <button type="button" class="navbar-toggle collapsed" ng-click="toggleCollapse()">
+          <button type="button" class="navbar-toggle" ng-class="getToggleClass()"  ng-click="toggleCollapse()">
             <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
+            <span class="icon-bar top-bar"></span>
+            <span class="icon-bar middle-bar"></span>
+            <span class="icon-bar bottom-bar"></span>
           </button>
         </div>
         <div id="navbar" class="nav-collapse navbar-responsive-collapse" collapse="isCollapsed">
@@ -230,27 +264,38 @@ angular.module("shopApp",["ui.bootstrap", "ui.router", "ngStorage", "customServi
 			})
 
 	})
-	.controller("masterCtrl", function($scope, $state, $rootScope){
+	.controller("masterCtrl", function($scope, $state, $rootScope, $window){
 		//this controller will control the state of the navigation when a user clicks on the links in the nav bar. I'm using scope inheritance
 		var currentState = "";
     $scope.isCollapsed = true;
+
+    
 
     //will highlight the tab
     $rootScope.$on("$stateChangeSuccess", function(event, toState, toParams, fromState, fromParams){
       currentState = toState.name;
     });
 
+    //animating the toggleclass
+    $scope.getToggleClass = function(){
+      return $scope.isCollapsed ? "collapsed" : "";
+    }
+
 
 		//toggles the collapsing menu only on mobile
 		$scope.toggleCollapse = function(){
 			$scope.isCollapsed = !$scope.isCollapsed;
-      //will need to fix an issue with the opening and closing of the collapse bar
+      
+      console.log($scope.isCollapsed)
 		}
 
     //user selection of category
     $scope.selectCategory = function(category){
       currentState = category;
-      $scope.toggleCollapse();
+      
+      if($window.innerWidth <= 768){
+        $scope.toggleCollapse();
+      }
     }
 
     //find the active state
