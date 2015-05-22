@@ -16,7 +16,7 @@
 			<td class="text-center"><span class="glyphicon glyphicon-remove-sign" role="button" ng-click="removeItem(product.ID)"></span></td>
 			<td>{{product.Product_Name}}</td>
 			<td class="text-right">{{product.Price | currency}}</td>
-			<td class="text-right"><input type="number" only-digits ng-model="product.Qty" ng-change="updateQty(product.Qty)" min="1" max="99"></td>
+			<td class="text-right"><input type="number" only-digits ng-model="product.Qty" ng-change="updateQty(product.Qty)" min="1" max="50"></td>
 			<td class="text-right">{{product.Qty * product.Price | currency}}</td>
 		</tr>
 		<tr>
@@ -38,7 +38,7 @@
 			<td></td>
 			<td></td>
 			<td class="text-right"><strong>Gratuity:</strong></td>
-			<td class="text-right"><input class="form-control" type="text" ng-model="gratuity"></td>
+			<td class="text-right"><input class="form-control" type="text" nks-only-number decimal-upto="2" allow-negative="false" ng-model="gratuity"></td>
 		</tr>
 		<tr>
 			<td></td>
