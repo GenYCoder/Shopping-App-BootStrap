@@ -1,0 +1,40 @@
+{
+  "name": "Shopping-App-BootStrap",
+  "version": "1.0.0",
+  "description": "<h1>Shopping App Bootstrap</h1> A demo can be found <a href=\"http://genycoder.github.io/Shopping-App-BootStrap\" target=\"_blank\">here</a> <br><br> It uses angularjs, ui.bootstrap, ui.router, and ngStorage <br><br> Steps to compile this:<br> 1) Start up a web server<br> 2) Navigate to web server folder<br> 3) Do a <b>git clone https://github.com/GenYCoder/Shopping-App-BootStrap.git</b><br> 4) Open the application pointing to the folder<br>",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GenYCoder/Shopping-App-BootStrap.git"
+  },
+  "author": "Sumen Tse",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/GenYCoder/Shopping-App-BootStrap/issues"
+  },
+  "homepage": "https://github.com/GenYCoder/Shopping-App-BootStrap",
+  "devDependencies": {
+    "angular": "^1.4.5",
+    "angular-ui-bootstrap": "^0.13.4",
+    "angular-ui-router": "^0.2.15",
+    "bootstrap": "^3.3.5",
+    "browserify": "^11.0.1",
+    "browserify-shim": "^3.8.10",
+    "gulp": "^3.9.0",
+    "gulp-autoprefixer": "^2.3.1",
+    "gulp-concat": "^2.5.2",
+    "gulp-csso": "^1.0.0",
+    "gulp-ng-annotate": "^1.1.0",
+    "gulp-rename": "^1.2.2",
+    "gulp-sass": "^2.0.1",
+    "gulp-sourcemaps": "^1.5.2",
+    "gulp-uglify": "^1.2.0",
+    "gulp-util": "^3.0.5",
+    "merge-stream": "^0.1.7",
+    "vinyl-buffer": "^1.0.0",
+    "vinyl-source-stream": "^1.1.0"
+  }
+}

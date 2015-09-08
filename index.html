@@ -121,56 +121,7 @@
   	</div>
 
     
-
-
-    <!-- Bootstrap core JavaScript
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
-
-   	<script src="lib/angular.min.js"></script>
-   	<script src="services/angular-ui-router.min.js"></script>
-    <script src="controllers/parentController.js"></script>
-   	<script src="controllers/shopController.js"></script>
-    <script src="controllers/productController.js"></script>
-    <script src="controllers/cartController.js"></script>
-    <script src="services/ui-bootstrap-tpls-0.13.0.min.js"></script>
-    <script src="services/ngStorage.min.js"></script>
-    <script src="services/customService.js"></script>
-    <script src="directives/directives.js"></script>
-    <script src="filters/filters.js"></script>
-
-    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-    <script src="assets/js/ie10-viewport-bug-workaround.js"></script>
-    
-  	<script>
-angular.module("shopApp",["ui.bootstrap", "ui.router", "ngStorage", "customService", "parentController", "shopController", "productController", "cartController", "myDirectives", "myFilters"])
-	.config(function($stateProvider, $urlRouterProvider){
-		//this is setting up the configuration for the application upon launch
-
-		//any unmatch url will go to the trends tab
-		$urlRouterProvider.otherwise("/Shop");
-
-		//routing the tabs to the correct view
-		$stateProvider
-			.state("Shop",{
-				url:"/Shop",
-				templateUrl:"views/shop.html",
-				controller: "shopCtrl"
-      })
-      .state("Product",{
-        url:"/Product/:ID",
-        templateUrl:"views/product.html",
-        controller: "productCtrl"
-      })
-			.state("Cart",{
-				url:"/Cart",
-				templateUrl:"views/cart.html",
-				controller: "cartCtrl"
-      })
-
-	})
-
-  	</script>
+    <script src="bundle.min.js"></script>
 
   </body>
 </html>
