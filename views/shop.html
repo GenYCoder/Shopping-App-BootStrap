@@ -2,7 +2,7 @@
 <div class="row" ng-repeat="rows in chunkData">
 	<div class="col-xs-12 col-sm-4 col-md-4" ng-repeat="product in rows" ng-click="showProduct(product.ID)">
 	  	<div class="thumbnail" role="button">
-			<img ng-src="assets/img/{{product.Image_Path}}" alt="{{product.Alt_Description}}">
+			<img class="image-padding" ng-src="assets/img/{{product.Image_Path}}" alt="{{product.Alt_Description}}">
 		    <div class="text-center">
 		    	<div class="item-name text-capitalize">{{product.Product_Name}}</div>
 		    	<h4>{{product.Price | currency:"$":0}}</h4>

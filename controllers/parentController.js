@@ -21,7 +21,6 @@ angular.module("parentController", [])
 		$scope.toggleCollapse = function(){
 			$scope.isCollapsed = !$scope.isCollapsed;
       
-      console.log($scope.isCollapsed)
 		}
 
     //user selection of category
